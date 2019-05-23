@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Movies = require('./models/movies.js');
 const Users = require('./models/users.js');
+const passport = require('passport');
+require('./passport');
 
 mongoose.connect('mongodb://localhost:27017/myflix',{useNewUrlParser: true}).then(
   ()=> console.log('Success')
@@ -29,6 +31,7 @@ const app = express();
 app.use(morgan('common'));
 app.use(bodyParser.json())
 app.use(express.static('public',{root: __dirname}));
+var auth = require('./auth')(app);
 
 /**********************
       Get request
@@ -41,7 +44,7 @@ app.use((err, req, res, next) => {
 })
 
 //get movies
-app.get('/movies', (req, res) => {
+app.get('/movies', passport.authenticate('jwt',{session: false}), (req, res) => {
   Movies.find()
   .then(movies => res.json(movies))
   .catch(err => res.status(500).send("Error: "+ err))

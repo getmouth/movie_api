@@ -14,7 +14,7 @@ passport.use(new LocalStrategy({
 },(username, password, callback) => {
   console.log(username+ " "+ password);
   Users.findOne({Username: username}, (err, user) => {
-    if(er) {
+    if(err) {
       console.log(err);
       return callback(err);
     }
@@ -36,4 +36,4 @@ passport.use(new JWTStrategy({
     return callback(null, user);
   })
   .catch(err => callback(err))
-}))
+}));
